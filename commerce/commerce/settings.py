@@ -120,3 +120,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# MEDIA_ROOT is the path of the folder that stores the files that are uploaded by 
+# the users of your Django website
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# MEDIA_URL is the URL of the Django media files. Every media file should start with 
+# this part of the URL and then be followed by the name of the file.
+
+MEDIA_URL = '/media/'
