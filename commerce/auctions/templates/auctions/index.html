@@ -5,10 +5,14 @@
     {% for listing in listings %}
         <div class="list-container">
             <img src="/media/{{ listing.picture }}" width = '300'/>
-            <h5>{{listing.title}}</h5>
-            <p>{{listing.category}}</p>
-            <p>{{listing.price}}</p>
+            <h5>{{ listing.title }}</h5>
+            <p>{{ listing.category }}</p>
+            <p>{{ listing.price }}</p>
         </div>
+        <form action="{% url 'display' listing.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit" name="viewListing">View Listing</button>
+        </form>    
     {% endfor %}
     TODO
 {% endblock %}

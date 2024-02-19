@@ -8,11 +8,7 @@ from .forms import NewListing
 from .models import User, Listings
 
 
-def index(request):
-    #if request.method == "POST":
-    #    return render(request, "listing.html", {
-    #        
-    #    })
+def index(request, ):
     listings = Listings.objects.all()
     context = {
         'listings': listings
@@ -86,3 +82,10 @@ def create(request):
             'form': form
         }
         return render(request, "auctions/create.html", context)
+    
+def display(request, listing_id):
+    if request.method == "POST":
+        listing = Listings.objects.get(pk=listing_id)
+        return render(request, "auctions/listing.html", {
+            "listing": listing
+        })
