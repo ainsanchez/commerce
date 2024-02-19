@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import mimetypes
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -116,10 +117,18 @@ USE_L10N = True
 USE_TZ = True
 
 
+# Add a static root
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# Add css types
+
+mimetypes.add_type("text/css", ".css", True)
 
 # MEDIA_ROOT is the path of the folder that stores the files that are uploaded by 
 # the users of your Django website

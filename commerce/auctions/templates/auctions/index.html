@@ -3,10 +3,12 @@
 {% block body %}
     <h2>Active Listings</h2>
     {% for listing in listings %}
-        <img src="/media/{{ listing.picture }}" width = '300'/>
+        <div class="list-container">
+            <img src="/media/{{ listing.picture }}" width = '300'/>
             <h5>{{listing.title}}</h5>
             <p>{{listing.category}}</p>
             <p>{{listing.price}}</p>
+        </div>
     {% endfor %}
     TODO
 {% endblock %}

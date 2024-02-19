@@ -1,3 +1,10 @@
 body {
     padding: 10px;
 }
+
+.list-container {
+    padding-top: 100px;
+    padding-bottom: 100px;
+    border: 1px solid lightgray;
+    margin-top: 10px;
+}

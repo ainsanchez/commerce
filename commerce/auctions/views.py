@@ -9,6 +9,10 @@ from .models import User, Listings
 
 
 def index(request):
+    #if request.method == "POST":
+    #    return render(request, "listing.html", {
+    #        
+    #    })
     listings = Listings.objects.all()
     context = {
         'listings': listings
