@@ -1,0 +1,16 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+    <h2>Check out my watchlist!</h2>
+    {% for item in cart %}
+        <div class="list-container">
+            <img src="/media/{{ item.items.picture }}" width = '300'/>
+            <h5>{{ item.items.title }}</h5>
+            <p>{{ item.items.category }}</p>
+            <p>{{ item.items.price }}</p>
+<!--        <h5>{{ item.items.title }}</h5>
+ -->    </div>        
+    {% endfor %}
+    
+{% endblock %}

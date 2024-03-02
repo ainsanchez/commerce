@@ -1,14 +1,15 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
 from .forms import NewListing
-from .models import User, Listings
+from .models import User, Listings, Watchlist
 
 
-def index(request, ):
+def index(request):
     listings = Listings.objects.all()
     context = {
         'listings': listings
@@ -89,3 +90,13 @@ def display(request, listing_id):
         return render(request, "auctions/listing.html", {
             "listing": listing
         })
+
+@login_required
+def watchlist(request):
+    cart = Watchlist.objects.filter(user_id=request.user.id)
+    return render(request, "auctions/watchlist.html", {
+        "cart": cart,
+    })
+
+
+

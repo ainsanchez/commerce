@@ -15,3 +15,10 @@ class Listings(models.Model):
     def __str__(self):
         return f"{self.title} {self.price}"
 
+class Watchlist(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="customers")
+    items = models.ForeignKey(Listings, on_delete=models.CASCADE, related_name="cart")
+
+    def __str__(self):
+        return f"{self.user}: {self.items}"
+
