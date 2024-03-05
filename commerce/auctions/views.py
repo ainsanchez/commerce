@@ -98,5 +98,27 @@ def watchlist(request):
         "cart": cart,
     })
 
+@login_required
+def reWatchlist(request, items_id):
+    if request.method == "POST":
+        item = Watchlist.objects.filter(items_id=items_id)
+        item.delete()
+        return HttpResponseRedirect(reverse("watchlist"))
+ 
+@login_required
+def addWatchlist(request, listing_id):
+    if request.method == "POST":
+        item = Watchlist.objects.filter(items_id=listing_id).filter(user_id=request.user.id)
+        if len(item) >= 1:
+            return HttpResponse('<p>Item is already on Watchlist</p>')
+        else:
+            user = User.objects.get(pk=request.user.id)
+            listing = Listings.objects.get(pk=listing_id)
+            entry = Watchlist(user=user, items=listing)
+            entry.save()
+    return HttpResponseRedirect(reverse("watchlist"))
+ 
+
+
 
 

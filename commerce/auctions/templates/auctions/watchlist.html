@@ -10,7 +10,11 @@
             <p>{{ item.items.category }}</p>
             <p>{{ item.items.price }}</p>
 <!--        <h5>{{ item.items.title }}</h5>
- -->    </div>        
+ -->    </div>    
+        <form action="{% url 'reWatchlist' item.items.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit" name="ReWatchlist">Remove from Watchlist</button>    
+        </form>
     {% endfor %}
     
 {% endblock %}

@@ -13,6 +13,10 @@
             {% csrf_token %}
             <button type="submit" name="viewListing">View Listing</button>
         </form>    
+        <form action="{% url 'addWatchlist' listing.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit" name="AdWatchlist">Add to Watchlist</button>
+        </form>  
     {% endfor %}
     TODO
 {% endblock %}
