@@ -7,5 +7,10 @@
         <h5>{{ listing.title }}</h5>
         <p>{{ listing.category }}</p>
         <p>{{ listing.price }}</p>
-    </div>    TODO
+    </div>
+    <form action="{% url 'bidResults' listing.id %}" method="post">
+        {% csrf_token %}
+        <input autofocus=False type="text" name="bid" placeholder="Bid value">
+        <input class="btn btn-primary" type="submit" value="Place your Bid">
+    </form>
 {% endblock %}

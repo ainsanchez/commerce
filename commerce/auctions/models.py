@@ -7,6 +7,7 @@ class User(AbstractUser):
     pass
 
 class Listings(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="auctions")
     title = models.CharField(max_length=64)
     category = models.CharField(max_length=64)
     price = models.IntegerField()
@@ -21,4 +22,13 @@ class Watchlist(models.Model):
 
     def __str__(self):
         return f"{self.user}: {self.items}"
+
+class Bid(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bidder")
+    item = models.ManyToManyField(Listings, blank = True, related_name="sale")
+    value = models.IntegerField()
+
+    def __str__(self):
+        return f"{self.user} bid {self.value}" 
+
 
