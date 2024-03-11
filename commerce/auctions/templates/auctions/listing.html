@@ -24,5 +24,10 @@
                 <p>Your bid is not the highest so far</p>
             {% endif %}
         {% endif %}
+        {% if  user.pk|floatformat:"0" == listing.owner.pk|floatformat:"0" %}
+            <form method="post">
+                <input class="btn btn-primary" type="submit" value="Close listing">
+            </form>
+        {% endif %}
     {% endif %}
 {% endblock %}

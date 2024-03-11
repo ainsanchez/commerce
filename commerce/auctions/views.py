@@ -128,8 +128,9 @@ def watchlist(request):
 def display(request, listing_id):
     if request.method == "POST":
         listing = Listings.objects.get(pk=listing_id)
-        winner = Bid.objects.filter(item=listing).order_by("-value")[0] 
+        #First check if listing has bids on it
         try:
+            winner = Bid.objects.filter(item=listing).order_by("-value")[0] 
             user = User.objects.get(pk=request.user.id)
             user_highest_bid = Bid.objects.filter(item=listing, user=user).order_by("-value")[0]
             return render(request, "auctions/listing.html", {
@@ -138,11 +139,13 @@ def display(request, listing_id):
                 "user": user,
                 "user_highest_bid": user_highest_bid
             })
-        except ObjectDoesNotExist:
+        except (ObjectDoesNotExist, IndexError):
             return render(request, "auctions/listing.html", {
                 "listing": listing,
-        })
-
+            })
+    return render(request, "auctions/listing.html", {
+    "listing": listing
+    })
 
 # Place a bid on a listing
 @login_required
