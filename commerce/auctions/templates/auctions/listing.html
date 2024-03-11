@@ -8,9 +8,21 @@
         <p>{{ listing.category }}</p>
         <p>{{ listing.price }}</p>
     </div>
-    <form action="{% url 'bidResults' listing.id %}" method="post">
-        {% csrf_token %}
-        <input autofocus=False type="text" name="bid" placeholder="Bid value">
-        <input class="btn btn-primary" type="submit" value="Place your Bid">
-    </form>
+    {% if user.is_authenticated %}
+        <form action="{% url 'bidResults' listing.id %}" method="post">
+            {% csrf_token %}
+            <input autofocus=False type="text" name="bid" placeholder="Bid value">
+            <input class="btn btn-primary" type="submit" value="Place your Bid">
+        </form>
+        {% if user_highest_bid.value|floatformat:"0" != 0 %}
+            <h2>You have placed a bid!</h2>
+            <p>The value of your bid is ${{ user_highest_bid.value }}</p>
+            <p>The winner value is ${{ winner.value }}</p>
+            {% if user_highest_bid.value|floatformat:"0" == winner.value|floatformat:"0" %}
+                <p>Congratulations, You are the winner!</p>
+            {% else %}
+                <p>Your bid is not the highest so far</p>
+            {% endif %}
+        {% endif %}
+    {% endif %}
 {% endblock %}

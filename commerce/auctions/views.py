@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
@@ -90,24 +91,6 @@ def create(request):
         return render(request, "auctions/create.html", context)
     
 
-# Display the selected listing
-def display(request, listing_id):
-    if request.method == "POST":
-        listing = Listings.objects.get(pk=listing_id)
-        return render(request, "auctions/listing.html", {
-            "listing": listing
-        })
-
-
-# Display all items registered on the user's watchlist
-@login_required
-def watchlist(request):
-    cart = Watchlist.objects.filter(user_id=request.user.id)
-    return render(request, "auctions/watchlist.html", {
-        "cart": cart,
-    })
-
-
 # Remove item from the user's watchlist
 @login_required
 def reWatchlist(request, items_id):
@@ -131,33 +114,59 @@ def addWatchlist(request, listing_id):
             entry.save()
     return HttpResponseRedirect(reverse("watchlist"))
 
+
+# Display all items registered on the user's watchlist
+@login_required
+def watchlist(request):
+    cart = Watchlist.objects.filter(user_id=request.user.id)
+    return render(request, "auctions/watchlist.html", {
+        "cart": cart,
+    })
+
+
+# Display the selected listing
+def display(request, listing_id):
+    if request.method == "POST":
+        listing = Listings.objects.get(pk=listing_id)
+        winner = Bid.objects.filter(item=listing).order_by("-value")[0] 
+        try:
+            user = User.objects.get(pk=request.user.id)
+            user_highest_bid = Bid.objects.filter(item=listing, user=user).order_by("-value")[0]
+            return render(request, "auctions/listing.html", {
+                "listing": listing,
+                "winner": winner,
+                "user": user,
+                "user_highest_bid": user_highest_bid
+            })
+        except ObjectDoesNotExist:
+            return render(request, "auctions/listing.html", {
+                "listing": listing,
+        })
+
+
 # Place a bid on a listing
 @login_required
 def bidResults(request, listing_id):
+    listing = Listings.objects.get(pk=listing_id)
+    user = User.objects.get(pk=request.user.id)
     if request.method == "POST":
         bid = request.POST["bid"]
-        listing = Listings.objects.get(pk=listing_id)
-        user = User.objects.get(pk=request.user.id)
-        if bid is None:
-            return HttpResponseRedirect(reverse("display"))
-        else:
-            entry = Bid.objects.create(user=user, value=bid)
-            entry.item.add(listing)
-            # Identify if current bid is the highest
-            winner = Bid.objects.filter(item=listing).order_by("-value")[0]
-
-    return render(request, "auctions/bidResults.html", {
-        "entry": entry,
-        "winner": winner
-    })
- 
+        # Identify if current bid is the highest
+        highest_bid = Bid.objects.filter(item=listing, user=user).order_by("-value")[0]
+        winner = Bid.objects.filter(item=listing).order_by("-value")[0]            
+        try:
+            if int(bid) >= winner.value or int(bid) >= listing.price:
+                entry = Bid.objects.create(user=user, value=bid)
+                entry.item.add(listing)
+                return render(request, "auctions/listing.html")
+            else:
+                return HttpResponse(f"<p>Bid value has to be higher than ${winner.value}</p>")
+        except ValueError:
+            return HttpResponse('<p>You have to add a valid bid value</p>')
 
 
-""" 
-            if bid == winner:
-                return HttpResponse('<p>You are the winner!</p>')
 
- """
+
 
 
 
