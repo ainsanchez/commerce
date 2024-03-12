@@ -1,2 +1,2 @@
 # commerce
-Replicate a web application similar to eBay
+I replicate a web application similar to eBay using Django
