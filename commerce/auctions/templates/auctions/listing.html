@@ -8,26 +8,50 @@
         <p>{{ listing.category }}</p>
         <p>{{ listing.price }}</p>
     </div>
+
     {% if user.is_authenticated %}
-        <form action="{% url 'bidResults' listing.id %}" method="post">
-            {% csrf_token %}
-            <input autofocus=False type="text" name="bid" placeholder="Bid value">
-            <input class="btn btn-primary" type="submit" value="Place your Bid">
-        </form>
-        {% if user_highest_bid.value|floatformat:"0" != 0 %}
-            <h2>You have placed a bid!</h2>
-            <p>The value of your bid is ${{ user_highest_bid.value }}</p>
-            <p>The winner value is ${{ winner.value }}</p>
-            {% if user_highest_bid.value|floatformat:"0" == winner.value|floatformat:"0" %}
-                <p>Congratulations, You are the winner!</p>
-            {% else %}
-                <p>Your bid is not the highest so far</p>
-            {% endif %}
-        {% endif %}
-        {% if  user.pk|floatformat:"0" == listing.owner.pk|floatformat:"0" %}
-            <form method="post">
-                <input class="btn btn-primary" type="submit" value="Close listing">
+        <div class="list-container">
+            <form action="{% url 'bidResults' listing.id %}" method="post">
+                {% csrf_token %}
+                <input autofocus=False type="text" name="bid" placeholder="Bid value">
+                <input class="btn btn-primary" type="submit" value="Place your Bid">
             </form>
+
+            {% if user_highest_bid.value %}
+                <h2>You have placed a bid!</h2>
+                <p>The value of your bid is ${{ user_highest_bid.value }}</p>
+                <p>The winner value is ${{ winner.value }}</p>
+
+                {% if user_highest_bid.value|floatformat:"0" == winner.value|floatformat:"0" %}
+                    <p>Congratulations, You are the winner!</p>
+                {% else %}
+                    <p>The auction is still open, hurry up before it closes</p>
+                {% endif %}
+
+            {% endif %}
+            
+            {% if  user.pk|floatformat:"0" == listing.owner.pk|floatformat:"0" %}
+                <form action="{% url 'closeListing' listing.id %}" method="post">
+                    {% csrf_token %}
+                    <input class="btn btn-primary" type="submit" value="Close listing">
+                </form>
+        </div>
         {% endif %}
+        <div class="list-container">
+            <h3>Add a new comment</h3>
+            <form action="{% url 'commentPost' listing.id %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input class="btn btn-primary" type="submit" value="Send">
+            </form>
+        </div>
     {% endif %}
+
+    {% for message in thread %}
+        <div class="list-container">
+            <h5>{{ message.user }} said:</h5>
+            <p>{{ message.review }}</p>
+        </div>
+    {% endfor %}
+    
 {% endblock %}
